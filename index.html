@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#0f766e">
+    <meta name="format-detection" content="telephone=no">
+    <title>Trabalhe Conosco - Lojão Super 20</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="page-shell">
+      <section class="hero panel">
+        <p class="eyebrow">Lojão Super 20 Cupira</p>
+        <h1>Trabalhe conosco</h1>
+        <p>Preencha seus dados para participar das próximas seleções. Leva só alguns minutos.</p>
+      </section>
+
+      <form id="candidateForm" class="panel form-card" autocomplete="on">
+        <div class="section-title">
+          <p class="eyebrow">Currículo do candidato</p>
+          <h2>Dados pessoais</h2>
+        </div>
+
+        <label>Nome completo
+          <input id="fullName" name="name" autocomplete="name" placeholder="Seu nome completo" required>
+        </label>
+
+        <div class="field-grid">
+          <label>WhatsApp
+            <input id="phone" name="phone" inputmode="tel" autocomplete="tel" placeholder="(81) 99999-9999" required>
+          </label>
+          <label>Idade
+            <input id="age" name="age" type="number" min="14" max="90" placeholder="Ex.: 24">
+          </label>
+        </div>
+
+        <div class="field-grid">
+          <label>Cidade
+            <input id="city" name="city" autocomplete="address-level2" placeholder="Ex.: Cupira" required>
+          </label>
+          <label>Bairro
+            <input id="neighborhood" name="neighborhood" placeholder="Ex.: Centro">
+          </label>
+        </div>
+
+        <div class="section-title spaced">
+          <p class="eyebrow">Vaga e experiência</p>
+          <h2>Informações profissionais</h2>
+        </div>
+
+        <label>Cargo desejado
+          <select id="desiredRole" name="desiredRole" required>
+            <option value="">Selecione</option>
+            <option>Repositor</option>
+            <option>Vendedor</option>
+            <option>Serviços gerais</option>
+            <option>Caixa</option>
+          </select>
+        </label>
+
+        <div class="field-grid">
+          <label>Já trabalhou em mercado?
+            <select id="marketExperience" name="marketExperience">
+              <option>Não</option>
+              <option>Sim</option>
+            </select>
+          </label>
+          <label>Disponibilidade
+            <select id="availability" name="availability" required>
+              <option value="">Selecione</option>
+              <option>Manhã</option>
+              <option>Tarde</option>
+              <option>Noite</option>
+              <option>Integral</option>
+              <option>Fins de semana</option>
+            </select>
+          </label>
+        </div>
+
+        <label>Experiência anterior
+          <textarea id="experience" name="experience" rows="4" placeholder="Conte onde trabalhou e o que fazia"></textarea>
+        </label>
+
+        <label>Observações
+          <textarea id="notes" name="notes" rows="3" placeholder="Deixe alguma informação importante, se quiser"></textarea>
+        </label>
+
+        <label>Foto do candidato
+          <input id="candidatePhoto" name="candidatePhoto" type="file" accept="image/*" capture="user" required>
+        </label>
+        <div id="photoPreview" class="photo-preview"><span>Nenhuma foto selecionada</span></div>
+
+        <div class="notice">
+          Ao enviar, você autoriza o Lojão Super 20 a guardar seus dados para processos seletivos.
+        </div>
+
+        <button id="submitButton" class="primary-action" type="submit">Enviar currículo</button>
+        <p id="formStatus" class="form-status" role="status"></p>
+      </form>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" crossorigin="anonymous"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
