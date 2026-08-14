@@ -79,6 +79,7 @@ function renderCandidates() {
     candidate.neighborhood,
     candidate.desired_role,
     candidate.availability,
+    candidate.requirements,
     candidate.status
   ].some((value) => String(value || "").toLocaleLowerCase("pt-BR").includes(query)));
 
@@ -102,6 +103,7 @@ function renderCandidates() {
     }
 
     node.querySelector(".candidate-details").innerHTML = detailsHtml(candidate);
+    node.querySelector(".candidate-requirements").textContent = candidate.requirements ? `Requisitos: ${candidate.requirements}` : "Requisitos nao informados.";
     node.querySelector(".candidate-experience").textContent = candidate.experience ? `Experiência: ${candidate.experience}` : "Experiência não informada.";
     node.querySelector(".candidate-notes").textContent = candidate.notes ? `Observações: ${candidate.notes}` : "";
     candidateList.append(node);

@@ -5,20 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="theme-color" content="#0f766e">
     <meta name="format-detection" content="telephone=no">
-    <title>Trabalhe Conosco - Lojão Super 20</title>
+    <title>Trabalhe Conosco - Loj&atilde;o Super 20</title>
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
     <main class="page-shell">
       <section class="hero panel">
-        <p class="eyebrow">Lojão Super 20 Cupira</p>
+        <p class="eyebrow">Loj&atilde;o Super 20 Cupira</p>
         <h1>Trabalhe conosco</h1>
-        <p>Preencha seus dados para participar das próximas seleções. Leva só alguns minutos.</p>
+        <p>Preencha seus dados para participar das pr&oacute;ximas sele&ccedil;&otilde;es. Leva s&oacute; alguns minutos.</p>
       </section>
 
       <form id="candidateForm" class="panel form-card" autocomplete="on">
         <div class="section-title">
-          <p class="eyebrow">Currículo do candidato</p>
+          <p class="eyebrow">Curr&iacute;culo do candidato</p>
           <h2>Dados pessoais</h2>
         </div>
 
@@ -45,8 +45,8 @@
         </div>
 
         <div class="section-title spaced">
-          <p class="eyebrow">Vaga e experiência</p>
-          <h2>Informações profissionais</h2>
+          <p class="eyebrow">Vaga e experi&ecirc;ncia</p>
+          <h2>Informa&ccedil;&otilde;es profissionais</h2>
         </div>
 
         <label>Cargo desejado
@@ -54,22 +54,22 @@
             <option value="">Selecione</option>
             <option>Repositor</option>
             <option>Vendedor</option>
-            <option>Serviços gerais</option>
+            <option>Servi&ccedil;os gerais</option>
             <option>Caixa</option>
           </select>
         </label>
 
         <div class="field-grid">
-          <label>Já trabalhou em mercado?
+          <label>J&aacute; trabalhou em mercado?
             <select id="marketExperience" name="marketExperience">
-              <option>Não</option>
+              <option>N&atilde;o</option>
               <option>Sim</option>
             </select>
           </label>
           <label>Disponibilidade
             <select id="availability" name="availability" required>
               <option value="">Selecione</option>
-              <option>Manhã</option>
+              <option>Manh&atilde;</option>
               <option>Tarde</option>
               <option>Noite</option>
               <option>Integral</option>
@@ -78,12 +78,24 @@
           </label>
         </div>
 
-        <label>Experiência anterior
+        <fieldset class="checkbox-group">
+          <legend>Requisitos que voc&ecirc; atende</legend>
+          <p class="muted-text">Marque tudo que combina com voc&ecirc;. Isso ajuda na sele&ccedil;&atilde;o.</p>
+          <label><input type="checkbox" name="requirements" value="Disponibilidade de horario"> Disponibilidade de hor&aacute;rio</label>
+          <label><input type="checkbox" name="requirements" value="Pode trabalhar em fins de semana e feriados"> Pode trabalhar em fins de semana e feriados</label>
+          <label><input type="checkbox" name="requirements" value="Gosta de atender clientes"> Gosta de atender clientes</label>
+          <label><input type="checkbox" name="requirements" value="Tem organizacao e cuidado com mercadorias"> Tem organiza&ccedil;&atilde;o e cuidado com mercadorias</label>
+          <label><input type="checkbox" name="requirements" value="Sabe trabalhar em equipe"> Sabe trabalhar em equipe</label>
+          <label><input type="checkbox" name="requirements" value="Tem responsabilidade e pontualidade"> Tem responsabilidade e pontualidade</label>
+          <label><input type="checkbox" name="requirements" value="Tem experiencia com caixa, vendas ou estoque"> Tem experi&ecirc;ncia com caixa, vendas ou estoque</label>
+        </fieldset>
+
+        <label>Experi&ecirc;ncia anterior
           <textarea id="experience" name="experience" rows="4" placeholder="Conte onde trabalhou e o que fazia"></textarea>
         </label>
 
-        <label>Observações
-          <textarea id="notes" name="notes" rows="3" placeholder="Deixe alguma informação importante, se quiser"></textarea>
+        <label>Observa&ccedil;&otilde;es
+          <textarea id="notes" name="notes" rows="3" placeholder="Deixe alguma informa&ccedil;&atilde;o importante, se quiser"></textarea>
         </label>
 
         <label>Foto do candidato
@@ -92,10 +104,10 @@
         <div id="photoPreview" class="photo-preview"><span>Nenhuma foto selecionada</span></div>
 
         <div class="notice">
-          Ao enviar, você autoriza o Lojão Super 20 a guardar seus dados para processos seletivos.
+          Ao enviar, voc&ecirc; autoriza o Loj&atilde;o Super 20 a guardar seus dados para processos seletivos.
         </div>
 
-        <button id="submitButton" class="primary-action" type="submit">Enviar currículo</button>
+        <button id="submitButton" class="primary-action" type="submit">Enviar curr&iacute;culo</button>
         <p id="formStatus" class="form-status" role="status"></p>
       </form>
     </main>

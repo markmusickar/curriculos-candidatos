@@ -8,6 +8,7 @@ create table if not exists public.job_applications (
   desired_role text not null,
   market_experience text,
   availability text not null,
+  requirements text,
   experience text,
   notes text,
   photo_path text,
@@ -16,6 +17,9 @@ create table if not exists public.job_applications (
   status text not null default 'novo',
   created_at timestamptz not null default now()
 );
+
+alter table public.job_applications
+add column if not exists requirements text;
 
 alter table public.job_applications enable row level security;
 

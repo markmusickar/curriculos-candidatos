@@ -107,10 +107,15 @@ function collectForm() {
     desired_role: value("#desiredRole"),
     market_experience: value("#marketExperience"),
     availability: value("#availability"),
+    requirements: checkedValues("requirements").join(", "),
     experience: value("#experience"),
     notes: value("#notes"),
     source: "formulario_web"
   };
+}
+
+function checkedValues(name) {
+  return [...document.querySelectorAll(`input[name="${name}"]:checked`)].map((input) => input.value);
 }
 
 function value(selector) {
