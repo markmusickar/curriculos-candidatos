@@ -114,6 +114,10 @@ function detailsHtml(candidate) {
   const details = [
     ["WhatsApp", candidate.phone],
     ["Idade", candidate.age ? `${candidate.age} anos` : "Não informada"],
+    ["Estado civil", candidate.marital_status || "Não informado"],
+    ["Recebe Bolsa Família?", candidate.receives_aid === true ? "Sim" : candidate.receives_aid === false ? "Não" : "Não informado"],
+    ["Tem filhos?", candidate.has_children === true ? "Sim" : candidate.has_children === false ? "Não" : "Não informado"],
+    ["Quantidade de filhos", candidate.has_children === true && candidate.children_count != null ? String(candidate.children_count) : candidate.has_children === false ? "0" : "Não informada"],
     ["Cidade", [candidate.city, candidate.neighborhood].filter(Boolean).join(" - ")],
     ["Mercado", candidate.market_experience],
     ["Disponibilidade", candidate.availability],

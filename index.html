@@ -44,6 +44,40 @@
           </label>
         </div>
 
+        <label>Estado civil
+          <select id="maritalStatus" name="maritalStatus">
+            <option value="">Selecione (opcional)</option>
+            <option>Solteiro(a)</option>
+            <option>Casado(a)</option>
+            <option>União estável</option>
+            <option>Divorciado(a)</option>
+            <option>Viúvo(a)</option>
+            <option>Prefiro não informar</option>
+          </select>
+        </label>
+        <div class="field-grid">
+          <label>Tem filhos?
+            <select id="hasChildren" name="hasChildren">
+              <option value="">Selecione (opcional)</option>
+              <option value="nao">Não</option>
+              <option value="sim">Sim</option>
+              <option value="nao_informar">Prefiro não informar</option>
+            </select>
+          </label>
+          <label id="childrenCountField" hidden>Quantos filhos?
+            <input id="childrenCount" name="childrenCount" type="number" min="1" step="1" inputmode="numeric" disabled>
+          </label>
+        </div>
+
+        <label>Recebe Bolsa Família?
+          <select id="receivesAid" name="receivesAid">
+            <option value="">Selecione (opcional)</option>
+            <option value="sim">Sim</option>
+            <option value="nao">Não</option>
+            <option value="nao_informar">Prefiro não informar</option>
+          </select>
+        </label>
+
         <div class="section-title spaced">
           <p class="eyebrow">Vaga e experi&ecirc;ncia</p>
           <h2>Informa&ccedil;&otilde;es profissionais</h2>
@@ -113,6 +147,6 @@
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" crossorigin="anonymous"></script>
-    <script src="app.js"></script>
+    <script src="app.js?v=20261023"></script>
   </body>
 </html>

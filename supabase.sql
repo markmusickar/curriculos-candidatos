@@ -21,6 +21,12 @@ create table if not exists public.job_applications (
 alter table public.job_applications
 add column if not exists requirements text;
 
+alter table public.job_applications
+  add column if not exists marital_status text,
+  add column if not exists receives_aid boolean,
+  add column if not exists has_children boolean,
+  add column if not exists children_count integer check (children_count >= 0);
+
 alter table public.job_applications enable row level security;
 
 drop policy if exists "candidato envia curriculo" on public.job_applications;
