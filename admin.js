@@ -196,8 +196,10 @@ async function deleteCandidate(candidate) {
     if (!data || !data.length) {
       return { ok: false, message: "Não foi possível excluir. Confira se o SQL de exclusão foi executado no Supabase." };
     }
-    if (candidate.photo_path) {
-      const { error: photoError } = await supabaseClient.storage.from(PHOTO_BUCKET).remove([candidate.photo_path]);
+    // Inclui as fotos de versões antigas, que ficam guardadas quando o candidato atualiza o currículo.
+    const photoPaths = [candidate.photo_path, ...(candidate.previous_versions || []).map((version) => version.photo_path)].filter(Boolean);
+    if (photoPaths.length) {
+      const { error: photoError } = await supabaseClient.storage.from(PHOTO_BUCKET).remove([...new Set(photoPaths)]);
       if (photoError) console.error(photoError);  // o currículo já saiu; a foto sobra no armazenamento
     }
     return { ok: true };
@@ -222,7 +224,8 @@ function detailsHtml(candidate) {
     ["Cursos e habilidades", candidate.skills],
     ["Referências", candidate.references_info],
     ["Como soube da vaga", candidate.how_found],
-    ["Enviado em", formatDate(candidate.created_at)]
+    ["Enviado em", formatDate(candidate.created_at)],
+    ...(candidate.updated_at ? [["Atualizado em", `${formatDate(candidate.updated_at)} (${candidate.update_count}x)`]] : [])
   ];
   return details.map(([label, value]) => `<div><dt>${escapeHtml(label)}</dt><dd>${escapeHtml(value || "-")}</dd></div>`).join("");
 }
