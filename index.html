@@ -33,7 +33,7 @@
           <label>WhatsApp
             <input id="phone" name="phone" inputmode="tel" autocomplete="tel" placeholder="(81) 99999-9999" required>
           </label>
-          <label>Idade
+          <label>Idade (opcional)
             <input id="age" name="age" type="number" min="14" max="90" placeholder="Ex.: 24">
           </label>
         </div>
@@ -43,7 +43,7 @@
             <input id="city" name="city" autocomplete="address-level2" placeholder="Ex.: Cupira" required>
           </label>
           <label>Bairro
-            <input id="neighborhood" name="neighborhood" placeholder="Ex.: Centro">
+            <input id="neighborhood" name="neighborhood" placeholder="Ex.: Centro" required>
           </label>
         </div>
 
@@ -104,7 +104,7 @@
 
         <div class="field-grid">
           <label>Escolaridade
-            <select id="education" name="education">
+            <select id="education" name="education" required>
               <option value="">Selecione</option>
               <option>Fundamental incompleto</option>
               <option>Fundamental completo</option>
@@ -115,7 +115,7 @@
             </select>
           </label>
           <label>Quando pode come&ccedil;ar?
-            <select id="startAvailability" name="startAvailability">
+            <select id="startAvailability" name="startAvailability" required>
               <option value="">Selecione</option>
               <option>Imediatamente</option>
               <option>Em at&eacute; 15 dias</option>
@@ -126,7 +126,7 @@
         </div>
 
         <label>Tempo de experi&ecirc;ncia
-          <select id="experienceTime" name="experienceTime">
+          <select id="experienceTime" name="experienceTime" required>
             <option value="">Selecione</option>
             <option>Sem experi&ecirc;ncia</option>
             <option>Menos de 6 meses</option>
@@ -140,7 +140,7 @@
           <input id="lastJob" name="lastJob" maxlength="150" placeholder="Ex.: Mercadinho Central, repositor">
         </label>
 
-        <label>Cursos e habilidades
+        <label>Cursos e habilidades (opcional)
           <textarea id="skills" name="skills" rows="3" maxlength="600" placeholder="Ex.: inform&aacute;tica b&aacute;sica, opera&ccedil;&atilde;o de caixa, atendimento ao cliente"></textarea>
         </label>
 
@@ -149,7 +149,7 @@
         </label>
 
         <label>Como soube da vaga?
-          <select id="howFound" name="howFound">
+          <select id="howFound" name="howFound" required>
             <option value="">Selecione</option>
             <option>Indica&ccedil;&atilde;o de amigo ou parente</option>
             <option>Instagram ou Facebook</option>
@@ -163,7 +163,7 @@
           <textarea id="experience" name="experience" rows="4" placeholder="Conte onde trabalhou e o que fazia"></textarea>
         </label>
 
-        <label>Observa&ccedil;&otilde;es
+        <label>Observa&ccedil;&otilde;es (opcional)
           <textarea id="notes" name="notes" rows="3" placeholder="Deixe alguma informa&ccedil;&atilde;o importante, se quiser"></textarea>
         </label>
 
@@ -186,6 +186,6 @@
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" crossorigin="anonymous"></script>
-    <script src="app.js?v=20261115"></script>
+    <script src="app.js?v=20261116"></script>
   </body>
 </html>
