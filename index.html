@@ -93,6 +93,77 @@
           <label><input type="checkbox" name="requirements" value="Tem experiencia com caixa, vendas ou estoque"> Tem experi&ecirc;ncia com caixa, vendas ou estoque</label>
         </fieldset>
 
+        <div class="section-title spaced">
+          <p class="eyebrow">Forma&ccedil;&atilde;o e hist&oacute;rico</p>
+          <h2>Conte um pouco mais</h2>
+        </div>
+
+        <div class="field-grid">
+          <label>Escolaridade
+            <select id="education" name="education">
+              <option value="">Selecione</option>
+              <option>Fundamental incompleto</option>
+              <option>Fundamental completo</option>
+              <option>M&eacute;dio incompleto (cursando)</option>
+              <option>M&eacute;dio completo</option>
+              <option>Superior incompleto (cursando)</option>
+              <option>Superior completo</option>
+            </select>
+          </label>
+          <label>Quando pode come&ccedil;ar?
+            <select id="startAvailability" name="startAvailability">
+              <option value="">Selecione</option>
+              <option>Imediatamente</option>
+              <option>Em at&eacute; 15 dias</option>
+              <option>Em at&eacute; 30 dias</option>
+              <option>Mais de 30 dias</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="field-grid">
+          <label>Tempo de experi&ecirc;ncia
+            <select id="experienceTime" name="experienceTime">
+              <option value="">Selecione</option>
+              <option>Sem experi&ecirc;ncia</option>
+              <option>Menos de 6 meses</option>
+              <option>6 meses a 1 ano</option>
+              <option>1 a 3 anos</option>
+              <option>Mais de 3 anos</option>
+            </select>
+          </label>
+          <label>J&aacute; trabalhou no Loj&atilde;o Super 20?
+            <select id="workedHereBefore" name="workedHereBefore">
+              <option value="">Selecione</option>
+              <option>N&atilde;o</option>
+              <option>Sim</option>
+            </select>
+          </label>
+        </div>
+
+        <label>&Uacute;ltimo emprego (empresa e fun&ccedil;&atilde;o)
+          <input id="lastJob" name="lastJob" maxlength="150" placeholder="Ex.: Mercadinho Central, repositor">
+        </label>
+
+        <label>Cursos e habilidades
+          <textarea id="skills" name="skills" rows="3" maxlength="600" placeholder="Ex.: inform&aacute;tica b&aacute;sica, opera&ccedil;&atilde;o de caixa, atendimento ao cliente"></textarea>
+        </label>
+
+        <label>Refer&ecirc;ncias profissionais (opcional)
+          <textarea id="referencesInfo" name="referencesInfo" rows="2" maxlength="400" placeholder="Nome e telefone de quem possa falar sobre o seu trabalho. Avise a pessoa antes."></textarea>
+        </label>
+
+        <label>Como soube da vaga?
+          <select id="howFound" name="howFound">
+            <option value="">Selecione</option>
+            <option>Indica&ccedil;&atilde;o de amigo ou parente</option>
+            <option>Instagram ou Facebook</option>
+            <option>Cartaz na loja</option>
+            <option>WhatsApp</option>
+            <option>Outro</option>
+          </select>
+        </label>
+
         <label>Experi&ecirc;ncia anterior
           <textarea id="experience" name="experience" rows="4" placeholder="Conte onde trabalhou e o que fazia"></textarea>
         </label>
@@ -107,7 +178,11 @@
         <div id="photoPreview" class="photo-preview"><span>Nenhuma foto selecionada</span></div>
 
         <div class="notice">
-          Ao enviar, voc&ecirc; autoriza o Loj&atilde;o Super 20 a guardar seus dados para processos seletivos.
+          Os dados que voc&ecirc; enviar ser&atilde;o usados apenas nos processos seletivos do Loj&atilde;o Super 20.
+        </div>
+
+        <div class="checkbox-group">
+          <label><input id="lgpdConsent" name="lgpdConsent" type="checkbox" required> Concordo que o Loj&atilde;o Super 20 guarde meus dados e minha foto para processos seletivos.</label>
         </div>
 
         <button id="submitButton" class="primary-action" type="submit">Enviar curr&iacute;culo</button>
@@ -116,6 +191,6 @@
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" crossorigin="anonymous"></script>
-    <script src="app.js?v=20261113"></script>
+    <script src="app.js?v=20261114"></script>
   </body>
 </html>

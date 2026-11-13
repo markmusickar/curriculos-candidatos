@@ -126,6 +126,9 @@ function renderCandidates() {
     candidate.desired_role,
     candidate.availability,
     candidate.requirements,
+    candidate.education,
+    candidate.last_job,
+    candidate.skills,
     candidate.status
   ].some((value) => String(value || "").toLocaleLowerCase("pt-BR").includes(query)));
 
@@ -165,6 +168,14 @@ function detailsHtml(candidate) {
     ["Cidade", [candidate.city, candidate.neighborhood].filter(Boolean).join(" - ")],
     ["Mercado", candidate.market_experience],
     ["Disponibilidade", candidate.availability],
+    ["Quando pode começar", candidate.start_availability],
+    ["Escolaridade", candidate.education],
+    ["Tempo de experiência", candidate.experience_time],
+    ["Já trabalhou aqui?", candidate.worked_here_before],
+    ["Último emprego", candidate.last_job],
+    ["Cursos e habilidades", candidate.skills],
+    ["Referências", candidate.references_info],
+    ["Como soube da vaga", candidate.how_found],
     ["Enviado em", formatDate(candidate.created_at)]
   ];
   return details.map(([label, value]) => `<div><dt>${escapeHtml(label)}</dt><dd>${escapeHtml(value || "-")}</dd></div>`).join("");

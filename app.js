@@ -37,6 +37,7 @@ async function submitCandidate(event) {
     if (payload.age !== null && (!Number.isInteger(payload.age) || payload.age < 14 || payload.age > 90)) {
       throw new ErroDeValidacao("Confira a idade informada.");
     }
+    if (!payload.lgpd_consent) throw new ErroDeValidacao("Marque a caixa de concordância para enviar o currículo.");
     if (!currentPhoto) throw new ErroDeValidacao("Tire ou selecione a foto do candidato.");
 
     // Se o envio falhar depois da foto, a próxima tentativa reaproveita a mesma foto.
@@ -144,6 +145,15 @@ function collectForm() {
     requirements: checkedValues("requirements").join(", "),
     experience: value("#experience"),
     notes: value("#notes"),
+    education: value("#education") || null,
+    start_availability: value("#startAvailability") || null,
+    experience_time: value("#experienceTime") || null,
+    worked_here_before: value("#workedHereBefore") || null,
+    last_job: value("#lastJob") || null,
+    skills: value("#skills") || null,
+    references_info: value("#referencesInfo") || null,
+    how_found: value("#howFound") || null,
+    lgpd_consent: document.querySelector("#lgpdConsent").checked,
     source: "formulario_web"
   };
 }
