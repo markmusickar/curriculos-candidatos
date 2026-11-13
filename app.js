@@ -18,6 +18,16 @@ let uploadedPhoto = null;  // foto já enviada, para não duplicar se o envio do
 form.addEventListener("submit", submitCandidate);
 document.querySelector("#marketExperience").addEventListener("change", syncStoreExperience);
 syncStoreExperience();
+document.querySelector("#experienceTime").addEventListener("change", syncExperienceRequired);
+syncExperienceRequired();
+
+// Quem tem experiência precisa contar onde trabalhou; quem nunca trabalhou não tem o que contar.
+function syncExperienceRequired() {
+  const time = value("#experienceTime");
+  const hasExperience = time !== "" && time !== "Sem experiência";
+  document.querySelector("#lastJob").required = hasExperience;
+  document.querySelector("#experience").required = hasExperience;
+}
 
 // Só pergunta o tipo de loja e o que fazia quando a pessoa já trabalhou em loja ou mercado.
 function syncStoreExperience() {
@@ -62,6 +72,7 @@ async function submitCandidate(event) {
 
     form.reset();
     syncStoreExperience();
+    syncExperienceRequired();
     currentPhoto = "";
     uploadedPhoto = null;
     renderPhotoPreview();
