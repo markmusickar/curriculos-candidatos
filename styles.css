@@ -15,3 +15,8 @@
 .perfil ul{margin:0;padding-left:20px;display:grid;gap:8px;line-height:1.4}
 .perfil li{color:#1c2a44}
 .hero-loja .notice{margin:0;border-color:rgba(15,27,51,.2);background:rgba(15,27,51,.08);color:#0f1b33}
+.hero-loja{text-align:center}
+.hero-loja .hero-logo{margin:-6px auto 6px}
+.perfil{max-width:520px;margin:6px auto 16px;text-align:left}
+.perfil h2{text-align:center}
+.hero-loja .notice{max-width:520px;margin:0 auto}
