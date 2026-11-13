@@ -17,17 +17,6 @@ let uploadedPhoto = null;  // foto já enviada, para não duplicar se o envio do
 
 form.addEventListener("submit", submitCandidate);
 photoInput.addEventListener("change", loadCandidatePhoto);
-document.querySelector("#hasChildren").addEventListener("change", syncChildrenField);
-syncChildrenField();
-
-function syncChildrenField() {
-  const hasChildren = value("#hasChildren") === "sim";
-  const countInput = document.querySelector("#childrenCount");
-  document.querySelector("#childrenCountField").hidden = !hasChildren;
-  countInput.disabled = !hasChildren;
-  countInput.required = hasChildren;
-  if (!hasChildren) countInput.value = "";
-}
 
 async function submitCandidate(event) {
   event.preventDefault();
@@ -38,9 +27,6 @@ async function submitCandidate(event) {
     if (!supabaseClient) throw new ErroDeValidacao("O envio não carregou. Verifique a internet e recarregue a página.");
 
     const payload = collectForm();
-    if (payload.has_children === true && (!Number.isInteger(payload.children_count) || payload.children_count < 1)) {
-      throw new ErroDeValidacao("Informe quantos filhos você tem, usando um número inteiro maior que zero.");
-    }
     if (!payload.full_name || !payload.phone || !payload.city || !payload.desired_role || !payload.availability) {
       throw new ErroDeValidacao("Preencha os campos obrigatórios.");
     }
@@ -63,7 +49,6 @@ async function submitCandidate(event) {
     if (error) throw error;
 
     form.reset();
-    syncChildrenField();
     currentPhoto = "";
     uploadedPhoto = null;
     renderPhotoPreview();
@@ -151,10 +136,6 @@ function collectForm() {
     full_name: value("#fullName"),
     phone: value("#phone"),
     age: numberValue("#age"),
-    marital_status: value("#maritalStatus") || null,
-    receives_aid: value("#receivesAid") === "sim" ? true : value("#receivesAid") === "nao" ? false : null,
-    has_children: value("#hasChildren") === "sim" ? true : value("#hasChildren") === "nao" ? false : null,
-    children_count: value("#hasChildren") === "sim" ? numberValue("#childrenCount") : value("#hasChildren") === "nao" ? 0 : null,
     city: value("#city"),
     neighborhood: value("#neighborhood"),
     desired_role: value("#desiredRole"),
