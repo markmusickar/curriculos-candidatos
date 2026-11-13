@@ -1,6 +1,11 @@
 const supabaseUrl = "https://upozyqpdmxhhnynqoefs.supabase.co";
 const supabaseKey = "sb_publishable_CyoDQRGvNzohmPjijToDAQ_9zYdIcIy";
-const supabaseClient = window.supabase?.createClient(supabaseUrl, supabaseKey);
+// O formulário é público: nunca usa a sessão de quem está logado na área administrativa.
+const supabaseClient = window.supabase?.createClient(supabaseUrl, supabaseKey, {
+  auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false }
+});
+
+class ErroDeValidacao extends Error {}  // mensagem pensada para o candidato ler
 
 const form = document.querySelector("#candidateForm");
 const statusEl = document.querySelector("#formStatus");
@@ -8,6 +13,7 @@ const submitButton = document.querySelector("#submitButton");
 const photoInput = document.querySelector("#candidatePhoto");
 const photoPreview = document.querySelector("#photoPreview");
 let currentPhoto = "";
+let uploadedPhoto = null;  // foto já enviada, para não duplicar se o envio do formulário falhar e a pessoa tentar de novo
 
 form.addEventListener("submit", submitCandidate);
 photoInput.addEventListener("change", loadCandidatePhoto);
@@ -29,20 +35,29 @@ async function submitCandidate(event) {
   submitButton.disabled = true;
 
   try {
-    if (!supabaseClient) throw new Error("Supabase não carregou. Verifique a internet.");
+    if (!supabaseClient) throw new ErroDeValidacao("O envio não carregou. Verifique a internet e recarregue a página.");
 
     const payload = collectForm();
     if (payload.has_children === true && (!Number.isInteger(payload.children_count) || payload.children_count < 1)) {
-      throw new Error("Informe quantos filhos você tem, usando um número inteiro maior que zero.");
+      throw new ErroDeValidacao("Informe quantos filhos você tem, usando um número inteiro maior que zero.");
     }
     if (!payload.full_name || !payload.phone || !payload.city || !payload.desired_role || !payload.availability) {
-      throw new Error("Preencha os campos obrigatórios.");
+      throw new ErroDeValidacao("Preencha os campos obrigatórios.");
     }
-    if (!currentPhoto) throw new Error("Tire ou selecione a foto do candidato.");
+    const phoneDigits = payload.phone.replace(/\D/g, "");
+    if (phoneDigits.length < 10 || phoneDigits.length > 13) {
+      throw new ErroDeValidacao("Confira o WhatsApp: informe o DDD e o número, por exemplo (81) 99999-9999.");
+    }
+    if (payload.age !== null && (!Number.isInteger(payload.age) || payload.age < 14 || payload.age > 90)) {
+      throw new ErroDeValidacao("Confira a idade informada.");
+    }
+    if (!currentPhoto) throw new ErroDeValidacao("Tire ou selecione a foto do candidato.");
 
-    const uploaded = await uploadPhoto(currentPhoto, payload.full_name);
-    payload.photo_path = uploaded.path;
-    payload.photo_url = uploaded.url;
+    // Se o envio falhar depois da foto, a próxima tentativa reaproveita a mesma foto.
+    if (!uploadedPhoto || uploadedPhoto.source !== currentPhoto) {
+      uploadedPhoto = { source: currentPhoto, ...(await uploadPhoto(currentPhoto)) };
+    }
+    payload.photo_path = uploadedPhoto.path;
 
     const { error } = await supabaseClient.from("job_applications").insert(payload);
     if (error) throw error;
@@ -50,10 +65,15 @@ async function submitCandidate(event) {
     form.reset();
     syncChildrenField();
     currentPhoto = "";
+    uploadedPhoto = null;
     renderPhotoPreview();
     setStatus("Currículo enviado com sucesso. Obrigado!", false);
   } catch (error) {
-    setStatus(error.message || "Não foi possível enviar. Tente novamente.", true);
+    if (!(error instanceof ErroDeValidacao)) console.error(error);
+    setStatus(
+      error instanceof ErroDeValidacao ? error.message : "Não foi possível enviar agora. Confira a internet e tente de novo.",
+      true
+    );
   } finally {
     submitButton.disabled = false;
   }
@@ -61,7 +81,16 @@ async function submitCandidate(event) {
 
 async function loadCandidatePhoto() {
   const file = photoInput.files?.[0];
-  currentPhoto = file ? await resizeImage(file) : "";
+  currentPhoto = "";
+  uploadedPhoto = null;
+  if (file) {
+    try {
+      currentPhoto = await resizeImage(file);
+    } catch (error) {
+      photoInput.value = "";
+      setStatus("Não foi possível ler essa foto. Tente tirar outra ou escolher outro arquivo.", true);
+    }
+  }
   renderPhotoPreview();
 }
 
@@ -69,16 +98,21 @@ function renderPhotoPreview() {
   photoPreview.innerHTML = currentPhoto ? `<img src="${currentPhoto}" alt="Foto do candidato">` : "<span>Nenhuma foto selecionada</span>";
 }
 
-async function uploadPhoto(dataUrl, name) {
+async function uploadPhoto(dataUrl) {
   const blob = dataUrlToBlob(dataUrl);
-  const path = `${new Date().toISOString().slice(0, 10)}/${Date.now()}-${safeName(name)}.jpg`;
+  // Nome aleatório: o nome da pessoa não deve aparecer no endereço do arquivo.
+  const path = `${new Date().toISOString().slice(0, 10)}/${crypto.randomUUID ? crypto.randomUUID() : randomId()}.jpg`;
   const { error } = await supabaseClient.storage.from("candidato-fotos").upload(path, blob, {
     contentType: "image/jpeg",
     upsert: false
   });
   if (error) throw error;
-  const { data } = supabaseClient.storage.from("candidato-fotos").getPublicUrl(path);
-  return { path, url: data.publicUrl };
+  return { path };
+}
+
+function randomId() {
+  const bytes = crypto.getRandomValues(new Uint8Array(16));
+  return [...bytes].map((byte) => byte.toString(16).padStart(2, "0")).join("");
 }
 
 function resizeImage(file) {
@@ -144,15 +178,6 @@ function value(selector) {
 function numberValue(selector) {
   const value = Number(document.querySelector(selector).value);
   return Number.isFinite(value) && value > 0 ? value : null;
-}
-
-function safeName(value) {
-  return String(value || "candidato")
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^a-z0-9]+/gi, "-")
-    .replace(/^-|-$/g, "")
-    .toLowerCase();
 }
 
 function setStatus(message, isError = false) {

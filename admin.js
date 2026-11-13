@@ -12,8 +12,11 @@ const template = $("#candidateTemplate");
 let candidates = [];
 
 $("#adminLogin").addEventListener("click", login);
+for (const field of ["#adminEmail", "#adminPassword"]) {
+  $(field).addEventListener("keydown", (event) => { if (event.key === "Enter") { event.preventDefault(); login(); } });
+}
 $("#logoutButton").addEventListener("click", logout);
-$("#candidateSearch").addEventListener("input", renderCandidates);
+$("#candidateSearch").addEventListener("input", () => ensureFreshLinks().then(renderCandidates));
 
 boot();
 
@@ -26,16 +29,34 @@ async function boot() {
   if (data.session) await enterDashboard();
 }
 
+let loggingIn = false;
 async function login() {
-  const email = $("#adminEmail").value.trim();
-  const password = $("#adminPassword").value;
-  $("#loginStatus").textContent = "Entrando...";
-  const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
-  if (error) {
-    $("#loginStatus").textContent = "E-mail ou senha inválidos.";
+  if (loggingIn) return;
+  if (!supabaseClient) {
+    $("#loginStatus").textContent = "Supabase não carregou. Verifique a internet.";
     return;
   }
-  await enterDashboard();
+  const email = $("#adminEmail").value.trim();
+  const password = $("#adminPassword").value;
+  if (!email || !password) {
+    $("#loginStatus").textContent = "Informe o e-mail e a senha.";
+    return;
+  }
+  loggingIn = true;
+  $("#loginStatus").textContent = "Entrando...";
+  try {
+    const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+    if (error) {
+      $("#loginStatus").textContent = "E-mail ou senha inválidos.";
+      return;
+    }
+    $("#adminPassword").value = "";
+    await enterDashboard();
+  } catch (error) {
+    $("#loginStatus").textContent = "Não foi possível entrar agora. Verifique a internet e tente de novo.";
+  } finally {
+    loggingIn = false;
+  }
 }
 
 async function logout() {
@@ -66,8 +87,33 @@ async function loadCandidates() {
   }
 
   candidates = data || [];
+  await signPhotoUrls();
   $("#adminSummary").textContent = `${candidates.length} candidato${candidates.length === 1 ? "" : "s"} cadastrado${candidates.length === 1 ? "" : "s"}.`;
   renderCandidates();
+}
+
+// As fotos ficam num armazenamento privado: o administrador vê cada uma por um link temporário (1 hora).
+const PHOTO_BUCKET = "candidato-fotos";
+const photoLinks = new Map();
+let signedAt = 0;
+
+// Os links duram 1 hora; se a página ficou aberta por muito tempo, pede links novos antes de mostrar a lista.
+async function ensureFreshLinks() {
+  if (candidates.length && Date.now() - signedAt > 50 * 60 * 1000) await signPhotoUrls();
+}
+
+async function signPhotoUrls() {
+  photoLinks.clear();
+  signedAt = Date.now();
+  const paths = [...new Set(candidates.map((candidate) => candidate.photo_path).filter(Boolean))];
+  if (!paths.length) return;
+  try {
+    const { data, error } = await supabaseClient.storage.from(PHOTO_BUCKET).createSignedUrls(paths, 3600);
+    if (error) throw error;
+    for (const item of data || []) if (item.signedUrl && !item.error) photoLinks.set(item.path, item.signedUrl);
+  } catch (error) {
+    console.error(error);  // sem os links, a lista aparece com "Sem foto"
+  }
 }
 
 function renderCandidates() {
@@ -93,9 +139,11 @@ function renderCandidates() {
     node.querySelector(".candidate-role").textContent = candidate.desired_role || "Cargo não informado";
 
     const photo = node.querySelector(".candidate-photo");
-    if (candidate.photo_url) {
+    const photoSrc = photoLinks.get(candidate.photo_path);
+    if (photoSrc) {
       const image = new Image();
-      image.src = candidate.photo_url;
+      image.loading = "lazy";
+      image.src = photoSrc;
       image.alt = `Foto de ${candidate.full_name}`;
       photo.append(image);
     } else {
@@ -103,7 +151,7 @@ function renderCandidates() {
     }
 
     node.querySelector(".candidate-details").innerHTML = detailsHtml(candidate);
-    node.querySelector(".candidate-requirements").textContent = candidate.requirements ? `Requisitos: ${candidate.requirements}` : "Requisitos nao informados.";
+    node.querySelector(".candidate-requirements").textContent = candidate.requirements ? `Requisitos: ${candidate.requirements}` : "Requisitos não informados.";
     node.querySelector(".candidate-experience").textContent = candidate.experience ? `Experiência: ${candidate.experience}` : "Experiência não informada.";
     node.querySelector(".candidate-notes").textContent = candidate.notes ? `Observações: ${candidate.notes}` : "";
     candidateList.append(node);
