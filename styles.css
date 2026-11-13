@@ -20,3 +20,13 @@
 .perfil{max-width:520px;margin:6px auto 16px;text-align:left}
 .perfil h2{text-align:center}
 .hero-loja .notice{max-width:520px;margin:0 auto}
+
+.candidate-actions{margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
+.danger-action{min-height:44px;padding:0 16px;border:1px solid #b42318;border-radius:10px;background:#fff;color:#b42318;font-weight:900;cursor:pointer}
+.danger-action:hover{background:#fef3f2}
+.confirm-delete{background:#b42318;color:#fff}.confirm-delete:hover{background:#912018}
+.confirm-delete:disabled,.cancel-delete:disabled{opacity:.6;cursor:not-allowed}
+.delete-confirm{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.delete-confirm[hidden]{display:none}
+.delete-confirm>span{font-weight:800;color:#b42318}
+.delete-status{margin:8px 0 0;min-height:20px;color:#b42318;font-weight:800}
