@@ -158,7 +158,7 @@ function dataUrlToBlob(dataUrl) {
 function collectForm() {
   return {
     full_name: value("#fullName"),
-    phone: value("#phone"),
+    phone: normalizePhone(value("#phone")),
     age: numberValue("#age"),
     city: value("#city"),
     neighborhood: value("#neighborhood"),
@@ -179,6 +179,15 @@ function collectForm() {
     lgpd_consent: document.querySelector("#lgpdConsent").checked,
     source: "formulario_web"
   };
+}
+
+// O navegador às vezes preenche o telefone com "+55". Guardamos sempre no mesmo formato: (81) 99999-9999.
+function normalizePhone(raw) {
+  let digits = raw.replace(/\D/g, "");
+  if (digits.length > 11 && digits.startsWith("55")) digits = digits.slice(2);
+  if (digits.length === 11) return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`;
+  if (digits.length === 10) return `(${digits.slice(0, 2)}) ${digits.slice(2, 6)}-${digits.slice(6)}`;
+  return raw;
 }
 
 function checkedValues(name) {

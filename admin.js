@@ -86,7 +86,7 @@ async function loadCandidates() {
     return;
   }
 
-  candidates = data || [];
+  candidates = (data || []).sort((a, b) => lastActivity(b) - lastActivity(a));  // quem atualizou o currículo sobe para o começo
   await signPhotoUrls();
   $("#adminSummary").textContent = `${candidates.length} candidato${candidates.length === 1 ? "" : "s"} cadastrado${candidates.length === 1 ? "" : "s"}.`;
   renderCandidates();
@@ -139,6 +139,12 @@ function renderCandidates() {
     const node = template.content.firstElementChild.cloneNode(true);
     node.querySelector("h2").textContent = candidate.full_name;
     node.querySelector(".status-pill").textContent = candidate.status || "novo";
+    if (candidate.updated_at) {
+      const updated = document.createElement("span");
+      updated.className = "status-pill updated-pill";
+      updated.textContent = "atualizado";
+      node.querySelector(".candidate-title").append(updated);
+    }
     node.querySelector(".candidate-role").textContent = candidate.desired_role || "Cargo não informado";
 
     const photo = node.querySelector(".candidate-photo");
@@ -228,6 +234,10 @@ function detailsHtml(candidate) {
     ...(candidate.updated_at ? [["Atualizado em", `${formatDate(candidate.updated_at)} (${candidate.update_count}x)`]] : [])
   ];
   return details.map(([label, value]) => `<div><dt>${escapeHtml(label)}</dt><dd>${escapeHtml(value || "-")}</dd></div>`).join("");
+}
+
+function lastActivity(candidate) {
+  return new Date(candidate.updated_at || candidate.created_at).getTime();
 }
 
 function formatDate(value) {
