@@ -30,3 +30,6 @@
 .delete-confirm[hidden]{display:none}
 .delete-confirm>span{font-weight:800;color:#b42318}
 .delete-status{margin:8px 0 0;min-height:20px;color:#b42318;font-weight:800}
+
+.updated-pill{background:#fff4d6;color:#8a5a00}
+.candidate-title{flex-wrap:wrap}
