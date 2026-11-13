@@ -76,7 +76,7 @@ async function submitCandidate(event) {
     currentPhoto = "";
     uploadedPhoto = null;
     renderPhotoPreview();
-    setStatus("Currículo enviado com sucesso. Obrigado!", false);
+    setStatus("Currículo enviado com sucesso. Se você já tinha enviado antes, atualizamos o seu cadastro. Obrigado!", false);
   } catch (error) {
     if (!(error instanceof ErroDeValidacao)) console.error(error);
     setStatus(
