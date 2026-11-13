@@ -157,8 +157,54 @@ function renderCandidates() {
     node.querySelector(".candidate-requirements").textContent = candidate.requirements ? `Requisitos: ${candidate.requirements}` : "Requisitos não informados.";
     node.querySelector(".candidate-experience").textContent = candidate.experience ? `Experiência: ${candidate.experience}` : "Experiência não informada.";
     node.querySelector(".candidate-notes").textContent = candidate.notes ? `Observações: ${candidate.notes}` : "";
+    setupDelete(node, candidate);
     candidateList.append(node);
   });
+}
+
+// Exclusão em dois passos (botão e confirmação), para ninguém apagar um currículo sem querer.
+function setupDelete(node, candidate) {
+  const start = node.querySelector(".delete-button");
+  const box = node.querySelector(".delete-confirm");
+  const status = node.querySelector(".delete-status");
+  const confirmButton = node.querySelector(".confirm-delete");
+  const cancel = node.querySelector(".cancel-delete");
+  start.addEventListener("click", () => { start.hidden = true; box.hidden = false; status.textContent = ""; });
+  cancel.addEventListener("click", () => { box.hidden = true; start.hidden = false; });
+  confirmButton.addEventListener("click", async () => {
+    confirmButton.disabled = true;
+    cancel.disabled = true;
+    status.textContent = "Excluindo...";
+    const result = await deleteCandidate(candidate);
+    if (result.ok) {
+      candidates = candidates.filter((item) => item.id !== candidate.id);
+      $("#adminSummary").textContent = `${candidates.length} candidato${candidates.length === 1 ? "" : "s"} cadastrado${candidates.length === 1 ? "" : "s"}.`;
+      renderCandidates();
+      return;
+    }
+    status.textContent = result.message;
+    confirmButton.disabled = false;
+    cancel.disabled = false;
+  });
+}
+
+async function deleteCandidate(candidate) {
+  try {
+    // .select() devolve as linhas apagadas; vazio quer dizer que o banco recusou (falta rodar o SQL de exclusão).
+    const { data, error } = await supabaseClient.from("job_applications").delete().eq("id", candidate.id).select("id");
+    if (error) throw error;
+    if (!data || !data.length) {
+      return { ok: false, message: "Não foi possível excluir. Confira se o SQL de exclusão foi executado no Supabase." };
+    }
+    if (candidate.photo_path) {
+      const { error: photoError } = await supabaseClient.storage.from(PHOTO_BUCKET).remove([candidate.photo_path]);
+      if (photoError) console.error(photoError);  // o currículo já saiu; a foto sobra no armazenamento
+    }
+    return { ok: true };
+  } catch (error) {
+    console.error(error);
+    return { ok: false, message: "Não foi possível excluir agora. Verifique a internet e tente de novo." };
+  }
 }
 
 function detailsHtml(candidate) {
