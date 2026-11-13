@@ -5,7 +5,7 @@ alter table public.job_applications
   add column if not exists education text,
   add column if not exists start_availability text,
   add column if not exists experience_time text,
-  add column if not exists worked_here_before text,
+  add column if not exists store_experience text,
   add column if not exists last_job text,
   add column if not exists skills text,
   add column if not exists references_info text,
@@ -33,7 +33,7 @@ alter table public.job_applications
     and (education is null or char_length(education) <= 60)
     and (start_availability is null or char_length(start_availability) <= 60)
     and (experience_time is null or char_length(experience_time) <= 60)
-    and (worked_here_before is null or char_length(worked_here_before) <= 10)
+    and (store_experience is null or char_length(store_experience) <= 300)
     and (last_job is null or char_length(last_job) <= 150)
     and (skills is null or char_length(skills) <= 600)
     and (references_info is null or char_length(references_info) <= 400)

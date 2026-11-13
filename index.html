@@ -8,7 +8,7 @@
     <meta name="theme-color" content="#0f766e">
     <meta name="format-detection" content="telephone=no">
     <title>Trabalhe Conosco - Loj&atilde;o Super 20</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=20261115">
   </head>
   <body>
     <main class="page-shell">
@@ -63,7 +63,7 @@
         </label>
 
         <div class="field-grid">
-          <label>J&aacute; trabalhou em mercado?
+          <label>J&aacute; trabalhou em loja ou mercado?
             <select id="marketExperience" name="marketExperience">
               <option>N&atilde;o</option>
               <option>Sim</option>
@@ -80,6 +80,10 @@
             </select>
           </label>
         </div>
+
+        <label id="storeExperienceField" hidden>Que tipo de loja e o que voc&ecirc; fazia?
+          <textarea id="storeExperience" name="storeExperience" rows="3" maxlength="300" placeholder="Ex.: supermercado, fui repositor e ajudava no caixa"></textarea>
+        </label>
 
         <fieldset class="checkbox-group">
           <legend>Requisitos que voc&ecirc; atende</legend>
@@ -121,25 +125,16 @@
           </label>
         </div>
 
-        <div class="field-grid">
-          <label>Tempo de experi&ecirc;ncia
-            <select id="experienceTime" name="experienceTime">
-              <option value="">Selecione</option>
-              <option>Sem experi&ecirc;ncia</option>
-              <option>Menos de 6 meses</option>
-              <option>6 meses a 1 ano</option>
-              <option>1 a 3 anos</option>
-              <option>Mais de 3 anos</option>
-            </select>
-          </label>
-          <label>J&aacute; trabalhou no Loj&atilde;o Super 20?
-            <select id="workedHereBefore" name="workedHereBefore">
-              <option value="">Selecione</option>
-              <option>N&atilde;o</option>
-              <option>Sim</option>
-            </select>
-          </label>
-        </div>
+        <label>Tempo de experi&ecirc;ncia
+          <select id="experienceTime" name="experienceTime">
+            <option value="">Selecione</option>
+            <option>Sem experi&ecirc;ncia</option>
+            <option>Menos de 6 meses</option>
+            <option>6 meses a 1 ano</option>
+            <option>1 a 3 anos</option>
+            <option>Mais de 3 anos</option>
+          </select>
+        </label>
 
         <label>&Uacute;ltimo emprego (empresa e fun&ccedil;&atilde;o)
           <input id="lastJob" name="lastJob" maxlength="150" placeholder="Ex.: Mercadinho Central, repositor">
@@ -191,6 +186,6 @@
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" crossorigin="anonymous"></script>
-    <script src="app.js?v=20261114"></script>
+    <script src="app.js?v=20261115"></script>
   </body>
 </html>

@@ -16,6 +16,17 @@ let currentPhoto = "";
 let uploadedPhoto = null;  // foto já enviada, para não duplicar se o envio do formulário falhar e a pessoa tentar de novo
 
 form.addEventListener("submit", submitCandidate);
+document.querySelector("#marketExperience").addEventListener("change", syncStoreExperience);
+syncStoreExperience();
+
+// Só pergunta o tipo de loja e o que fazia quando a pessoa já trabalhou em loja ou mercado.
+function syncStoreExperience() {
+  const worked = value("#marketExperience") === "Sim";
+  const field = document.querySelector("#storeExperience");
+  document.querySelector("#storeExperienceField").hidden = !worked;
+  field.required = worked;
+  if (!worked) field.value = "";
+}
 photoInput.addEventListener("change", loadCandidatePhoto);
 
 async function submitCandidate(event) {
@@ -50,6 +61,7 @@ async function submitCandidate(event) {
     if (error) throw error;
 
     form.reset();
+    syncStoreExperience();
     currentPhoto = "";
     uploadedPhoto = null;
     renderPhotoPreview();
@@ -148,7 +160,7 @@ function collectForm() {
     education: value("#education") || null,
     start_availability: value("#startAvailability") || null,
     experience_time: value("#experienceTime") || null,
-    worked_here_before: value("#workedHereBefore") || null,
+    store_experience: value("#marketExperience") === "Sim" ? (value("#storeExperience") || null) : null,
     last_job: value("#lastJob") || null,
     skills: value("#skills") || null,
     references_info: value("#referencesInfo") || null,
