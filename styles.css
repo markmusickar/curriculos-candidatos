@@ -33,3 +33,27 @@
 
 .updated-pill{background:#fff4d6;color:#8a5a00}
 .candidate-title{flex-wrap:wrap}
+
+.print-button{margin-right:10px}
+.print-all{margin-top:14px}
+.print-sheet{display:none}
+@media print{
+@page{size:A4;margin:14mm}
+body.printing{background:#fff;min-height:0}
+body.printing>*:not(#printSheet){display:none!important}
+body.printing .print-sheet{display:block}
+.resume-page{color:#000;font-size:11pt;line-height:1.4;break-after:page}
+.resume-page:last-child{break-after:auto}
+.resume-head{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;margin-bottom:12px;padding-bottom:10px;border-bottom:2px solid #000}
+.resume-brand{margin:0 0 4px;font-size:9pt;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.resume-head h1{margin:0 0 4px;font-size:22pt;line-height:1.1}
+.resume-role{margin:0;font-size:13pt;font-weight:700}
+.resume-photo{flex:none;width:34mm;height:44mm;object-fit:cover;border:1px solid #000}
+.resume-section{margin-bottom:12px;break-inside:avoid}
+.resume-section h2{margin:0 0 6px;padding-bottom:3px;border-bottom:1px solid #555;font-size:10pt;text-transform:uppercase;letter-spacing:.06em}
+.resume-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px 18px;margin:0}
+.resume-grid dt{font-size:8pt;font-weight:700;text-transform:uppercase;color:#444}
+.resume-grid dd{margin:1px 0 0;font-weight:700;overflow-wrap:anywhere}
+.resume-text{margin:0;white-space:pre-wrap;overflow-wrap:anywhere}
+.resume-footer{margin:14px 0 0;font-size:9pt;color:#444}
+}

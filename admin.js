@@ -10,12 +10,14 @@ const emptyState = $("#emptyState");
 const template = $("#candidateTemplate");
 
 let candidates = [];
+let lastFiltered = [];
 
 $("#adminLogin").addEventListener("click", login);
 for (const field of ["#adminEmail", "#adminPassword"]) {
   $(field).addEventListener("keydown", (event) => { if (event.key === "Enter") { event.preventDefault(); login(); } });
 }
 $("#logoutButton").addEventListener("click", logout);
+$("#printAll").addEventListener("click", () => printResumes(lastFiltered));
 $("#candidateSearch").addEventListener("input", () => ensureFreshLinks().then(renderCandidates));
 
 boot();
@@ -132,8 +134,10 @@ function renderCandidates() {
     candidate.status
   ].some((value) => String(value || "").toLocaleLowerCase("pt-BR").includes(query)));
 
+  lastFiltered = filtered;
   candidateList.innerHTML = "";
   emptyState.hidden = filtered.length > 0;
+  $("#printAll").hidden = filtered.length === 0;
 
   filtered.forEach((candidate) => {
     const node = template.content.firstElementChild.cloneNode(true);
@@ -163,6 +167,7 @@ function renderCandidates() {
     node.querySelector(".candidate-requirements").textContent = candidate.requirements ? `Requisitos: ${candidate.requirements}` : "Requisitos não informados.";
     node.querySelector(".candidate-experience").textContent = candidate.experience ? `Experiência: ${candidate.experience}` : "Experiência não informada.";
     node.querySelector(".candidate-notes").textContent = candidate.notes ? `Observações: ${candidate.notes}` : "";
+    node.querySelector(".print-button").addEventListener("click", () => printResumes([candidate]));
     setupDelete(node, candidate);
     candidateList.append(node);
   });
@@ -246,4 +251,119 @@ function formatDate(value) {
 
 function escapeHtml(value) {
   return String(value ?? "").replace(/[&<>'"]/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" }[char]));
+}
+
+// ---- Impressão de currículos ----
+// Imprime na própria página (sem janela nova): o CSS de impressão esconde a tela e mostra só o #printSheet,
+// com um currículo por página.
+const printSheet = $("#printSheet");
+
+async function printResumes(list) {
+  if (!list.length) return;
+  await ensureFreshLinks();
+  printSheet.replaceChildren(...list.map(buildResume));
+  await waitForImages(printSheet);
+  document.body.classList.add("printing");
+  window.print();
+}
+
+window.addEventListener("afterprint", () => {
+  document.body.classList.remove("printing");
+  printSheet.replaceChildren();
+});
+
+// Espera as fotos carregarem para não imprimir o currículo sem foto (no máximo 4 segundos).
+function waitForImages(root) {
+  const pending = [...root.querySelectorAll("img")]
+    .filter((image) => !image.complete)
+    .map((image) => new Promise((resolve) => {
+      image.addEventListener("load", resolve, { once: true });
+      image.addEventListener("error", resolve, { once: true });
+    }));
+  return Promise.race([Promise.all(pending), new Promise((resolve) => setTimeout(resolve, 4000))]);
+}
+
+function makeEl(tag, className, text) {
+  const node = document.createElement(tag);
+  if (className) node.className = className;
+  if (text !== undefined) node.textContent = text;
+  return node;
+}
+
+function resumeSections(candidate) {
+  return [
+    ["Dados pessoais", [
+      ["WhatsApp", candidate.phone],
+      ["Idade", candidate.age ? `${candidate.age} anos` : "Não informada"],
+      ["Cidade", [candidate.city, candidate.neighborhood].filter(Boolean).join(" - ")]
+    ]],
+    ["Experiência profissional", [
+      ["Já trabalhou em loja ou mercado?", candidate.market_experience],
+      ["Tipo de loja e o que fazia", candidate.store_experience],
+      ["Tempo de experiência", candidate.experience_time],
+      ["Último emprego", candidate.last_job]
+    ]],
+    ["Disponibilidade", [
+      ["Disponibilidade", candidate.availability],
+      ["Quando pode começar", candidate.start_availability]
+    ]],
+    ["Formação e habilidades", [
+      ["Escolaridade", candidate.education],
+      ["Cursos e habilidades", candidate.skills]
+    ]],
+    ["Outras informações", [
+      ["Referências", candidate.references_info],
+      ["Como soube da vaga", candidate.how_found]
+    ]]
+  ];
+}
+
+// Monta a página do currículo só com textContent (nada de innerHTML), por segurança.
+function buildResume(candidate) {
+  const page = makeEl("article", "resume-page");
+
+  const head = makeEl("header", "resume-head");
+  const title = makeEl("div", "resume-title");
+  title.append(
+    makeEl("p", "resume-brand", "Lojão Super 20 · Currículo"),
+    makeEl("h1", "", candidate.full_name),
+    makeEl("p", "resume-role", candidate.desired_role || "Cargo não informado")
+  );
+  head.append(title);
+  const photoSrc = photoLinks.get(candidate.photo_path);
+  if (photoSrc) {
+    const photo = new Image();
+    photo.className = "resume-photo";
+    photo.alt = `Foto de ${candidate.full_name}`;
+    photo.src = photoSrc;
+    head.append(photo);
+  }
+  page.append(head);
+
+  for (const [heading, rows] of resumeSections(candidate)) {
+    const section = makeEl("section", "resume-section");
+    const grid = makeEl("dl", "resume-grid");
+    for (const [label, value] of rows) {
+      const item = makeEl("div");
+      item.append(makeEl("dt", "", label), makeEl("dd", "", value || "-"));
+      grid.append(item);
+    }
+    section.append(makeEl("h2", "", heading), grid);
+    page.append(section);
+  }
+
+  const texts = [
+    ["Requisitos", candidate.requirements || "Não informados."],
+    ["Experiência", candidate.experience || "Não informada."],
+    ...(candidate.notes ? [["Observações", candidate.notes]] : [])
+  ];
+  for (const [heading, text] of texts) {
+    const section = makeEl("section", "resume-section");
+    section.append(makeEl("h2", "", heading), makeEl("p", "resume-text", text));
+    page.append(section);
+  }
+
+  const sent = `Enviado em ${formatDate(candidate.created_at)}`;
+  page.append(makeEl("p", "resume-footer", candidate.updated_at ? `${sent} · Atualizado em ${formatDate(candidate.updated_at)}` : sent));
+  return page;
 }
